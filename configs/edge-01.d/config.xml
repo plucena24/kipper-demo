@@ -238,7 +238,7 @@
       <apply-path>interfaces lo0 unit &lt;*&gt; family inet address &lt;*.*.*.*&gt;</apply-path>
   </prefix-list>
   <prefix-list operation="replace">
-    <name>V6_LOOPBACK-IPS</name>
+    <name>V6_LOOPBACK_IPS</name>
       <apply-path>interfaces lo0 unit &lt;*&gt; family inet6 address &lt;*:*&gt;</apply-path>
   </prefix-list>
   <prefix-list operation="replace">
@@ -247,11 +247,11 @@
   </prefix-list>
   <prefix-list operation="replace">
     <name>BGP_PEERS</name>
-      <apply-path>routing-instances &lt;*&gt; protocols bgp group &lt;*&gt; neighbor &lt;*.*.*.*&gt;</apply-path>
+      <apply-path>protocols bgp group &lt;*&gt; neighbor &lt;*.*.*.*&gt;</apply-path>
   </prefix-list>
   <prefix-list operation="replace">
     <name>V6_BGP_PEERS</name>
-      <apply-path>routing-instances &lt;*&gt; protocols bgp group &lt;*&gt; neighbor &lt;*:*&gt;</apply-path>
+      <apply-path>protocols bgp group &lt;*&gt; neighbor &lt;*:*&gt;</apply-path>
   </prefix-list>
 </policy-options>
 <snmp operation="replace">
