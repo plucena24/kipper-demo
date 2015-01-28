@@ -85,5 +85,5 @@ global_prefix_lists:
       - 127.0.0.1
     apply_path: "interfaces lo0 unit &lt;*&gt; family inet address &lt;*.*.*.*&gt;"
 
-  - name: V6_LOOPBACK-IPS
+  - name: V6_LOOPBACK_IPS
     apply_path: "interfaces lo0 unit &lt;*&gt; family inet6 address &lt;*:*&gt;"

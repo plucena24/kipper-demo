@@ -38,8 +38,9 @@ $ git clone git://github.com/ansible/ansible.git
 $ cd ansible/
 $ git submodule update --init --recursive
 $ echo "source ~/ansible/hacking/env-setup" >> ~/.bash_profile
-The last command assumes that your shell is bash. Adjust to your environment as needed.
 ````
+
+The last command assumes that your shell is bash. Adjust to your environment as needed.
 
 Install the Junos Netconf library for Python.
 
@@ -69,7 +70,7 @@ Load the environment variables
 $ source ~/.bash_profile
 ````
 
-### Virtual Junos device
+### Virtual JunOS device
 
 You can test this demo using JunOS virtual machines, such as the
 Virtual SRX (vSRX). You can find some instructions at:
