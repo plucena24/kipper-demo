@@ -1,0 +1,89 @@
+<snmp operation="replace">
+  <description>{{ host_basename }}</description>
+  <location>{{ snmp_location }}</location>
+  <contact>{{ snmp_contact }}</contact>
+  <v3>
+    <usm>
+      <local-engine>
+        <user>
+          <name>{{ snmp_user }}</name>
+          <authentication-sha>
+            <authentication-key>{{ snmp_auth_key }}</authentication-key>
+          </authentication-sha>
+          <privacy-aes128>
+            <undocumented><privacy-key>{{ snmp_priv_key }}</privacy-key></undocumented>
+          </privacy-aes128>
+        </user>
+      </local-engine>
+    </usm>
+    <vacm>
+      <security-to-group>
+        <security-model>
+          <name>usm</name>
+          <security-name>
+            <name>{{ snmp_user }}</name>
+            <group>all-info</group>
+          </security-name>
+        </security-model>
+      </security-to-group>
+      <access>
+        <group>
+          <name>all-info</name>
+          <default-context-prefix>
+            <security-model>
+              <name>usm</name>
+              <security-level>
+                <name>privacy</name>
+                <read-view>all-info</read-view>
+              </security-level>
+              <security-level>
+                <name>authentication</name>
+                <read-view>all-info</read-view>
+              </security-level>
+            </security-model>
+          </default-context-prefix>
+        </group>
+      </access>
+    </vacm>
+  </v3>
+  <engine-id>
+   <local>{{ snmp_engine_id }}</local>
+  </engine-id>
+  <view>
+    <name>all-info</name>
+    <oid>
+      <name>.1</name>
+    </oid>
+  </view>                 
+  <community>
+    <name>{{ snmp_community }}</name>
+      <authorization>read-only</authorization>
+  </community>
+{% if snmp_trap_source_addr is defined %}
+  <trap-options>
+    <source-address>
+      <address>{{ snmp_trap_source_addr }}</address>
+    </source-address>
+  </trap-options>
+{% endif %}
+  <trap-group>
+    <name>public</name>
+    <version>v2</version>
+    <categories>
+      <authentication/>
+      <chassis/>
+      <link/>
+      <remote-operations/>
+      <routing/>
+      <startup/>
+      <rmon-alarm/>
+      <configuration/>
+      <services/>
+      </categories>
+    <targets>
+{% for target in snmp_trap_targets %}
+      <name>{{ target }}</name>
+{% endfor %}
+    </targets>
+  </trap-group>
+</snmp>

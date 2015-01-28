@@ -1,0 +1,6 @@
+---
+
+# Intentionally empty array to avoid broken template run
+role_prefix_lists: []
+
+local_prefix_lists: []

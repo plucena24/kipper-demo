@@ -1,0 +1,3 @@
+- name: checking NETCONF
+  wait_for: host={{ inventory_hostname }} port=830 timeout={{ timeout | default(5) }}
+  always_run: yes

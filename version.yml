@@ -1,0 +1,17 @@
+---
+- name: Junos OS version
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - include: tasks/check_nc
+
+    - name: Get Junos Facts
+      junos_get_facts: 
+        host={{ inventory_hostname }}
+        user=oper
+      register: junos
+      
+    - name: version
+      debug: msg="{{ junos.facts.version }}"

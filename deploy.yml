@@ -1,0 +1,19 @@
+---
+# This playbook pushes configurations to devices
+# via NETCONF. It requires the ansible-stdlib-junos module
+
+- name: Deploy configurations
+  hosts: all
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - include: tasks/set_facts.yml
+    - name: Deploy configuration
+      junos_install_config: 
+        host={{ inventory_hostname }}
+        user=admin
+        file={{ config_dir }}/config.xml
+        logfile={{ log_dir }}/{{ inventory_hostname }}.log
+        diffs_file={{ diffs_dir }}/{{ inventory_hostname }}.diff
+        timeout=60

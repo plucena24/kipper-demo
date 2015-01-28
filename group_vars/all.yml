@@ -1,0 +1,89 @@
+---
+#
+# Default shared variables
+#
+#
+
+# Ansible playbook specific
+tmp_path: /tmp/ansible
+log_dir: "{{ tmp_path }}/logs"
+diffs_dir: "{{ tmp_path }}/diffs"
+
+# Default System Parameters
+
+root_password_hash: $sha1$a2bba2d1f9e066c3d8e7c54456a28f5db508a32a
+
+# Location
+country_code: N/A
+postal_code: N/A
+latitude: N/A
+longitude: N/A
+building: N/A
+floor: N/A
+rack: N/A
+
+# DNS
+domain_name: example.com
+domain_search:
+  - foo.net
+  - bar.net
+name_servers:
+  - 192.0.2.1
+  - 198.51.100.2
+
+# SSH
+ssh_connection_limit: 20
+ssh_rate_limit: 30
+
+# SNMP
+snmp_location:  123 Main St.
+snmp_contact: noc@example.com
+snmp_community: my_snmp_community
+snmp_user: my_snmp_user
+snmp_engine_id: aaaabbbbcccc
+snmp_auth_key: my_auth_key
+snmp_priv_key: my_priv_key
+snmp_trap_targets:
+  - 192.0.2.1
+
+# Syslog
+syslog_host: 192.0.2.1
+
+# NTP
+ntp_boot_server: 198.51.100.2
+ntp_servers:
+  - 192.0.2.1
+  - 198.51.100.2
+
+# System stuff
+system_client_alive_count_max: 5
+system_client_alive_interval: 10
+syslog_file_size: 10m
+syslog_file_count: 10
+
+# Global prefix lists
+global_prefix_lists:
+
+  - name: TRUSTED
+    blocks:
+      - 192.168.0.0/16
+      - 192.0.2.0/24
+
+  - name: SNMP_MGRS
+    blocks:
+      - 192.0.2.1
+      - 198.51.100.2
+
+  - name: DNS_SERVERS
+    apply_path: "system name-server &lt;*.*.*.*&gt;"
+
+  - name: NTP_SERVERS
+    apply_path: "system ntp server &lt;*.*.*.*&gt;"
+
+  - name: LOOPBACK_IPS
+    blocks:
+      - 127.0.0.1
+    apply_path: "interfaces lo0 unit &lt;*&gt; family inet address &lt;*.*.*.*&gt;"
+
+  - name: V6_LOOPBACK-IPS
+    apply_path: "interfaces lo0 unit &lt;*&gt; family inet6 address &lt;*:*&gt;"

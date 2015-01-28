@@ -1,0 +1,105 @@
+---
+#
+# This playbook sets up directories and produces final
+# configuration files
+
+#
+# =========================================================
+# Set up variables and directories
+# =========================================================
+
+- name: Clean up and create common local directories
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: remove log directory
+      file: path={{ log_dir }} state=absent
+      ignore_errors: yes
+
+    - name: create log directory
+      file: path={{ log_dir }} state=directory
+
+    - name: remove diffs directory
+      file: path={{ diffs_dir }} state=absent
+      ignore_errors: yes
+
+    - name: create diffs directory
+      file: path={{ diffs_dir }} state=directory
+
+
+- name: Clean up and create directories for each host
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - include: tasks/set_facts.yml
+
+    - name: remove host build temp directory
+      file: path={{ build_dir }} state=absent
+      ignore_errors: yes
+
+    - name: create host build temp directory
+      file: path={{ build_dir }} state=directory
+
+    - name: remove final config directory
+      file: path={{ config_dir }} state=absent
+      ignore_errors: yes
+
+    - name: create final config directory
+      file: path={{ config_dir }} state=directory
+
+    - name: gathering facts from device
+      junos_get_facts: host={{ inventory_hostname }} user=oper
+      register: junos 
+
+- name: Load vars based on facts
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - include_vars: "group_vars/vsrx.yml"
+      when: junos.facts.model | match("FIREFLY-PERIMETER")
+
+# =========================================================
+# Role based config template building
+# =========================================================
+
+- name: Build Configurations -- Common
+  hosts: all
+  connection: local
+  gather_facts: no
+  roles:
+    - common
+
+- name: Build Configurations -- Edge
+  hosts: edge
+  connection: local
+  gather_facts: no
+  roles:
+    - edge
+
+- name: Build Configurations -- VPN
+  hosts: vpn
+  connection: local
+  gather_facts: no
+  roles:
+    - vpn
+
+# =========================================================
+# Finish by assembling config snippets into single file
+# =========================================================
+
+- name: Create final Configuration
+  hosts: all
+  connection: local
+  gather_facts: no
+  tasks:
+    - name: assembling configurations
+      assemble: src={{ build_dir }} dest={{ config_file }}
+
+    - name: wrapping xml
+      shell: bin/wrap_xml.sh {{ config_file }}
+
+    - name: Validate XML
+      shell: bin/validate_xml.py {{ config_file }}

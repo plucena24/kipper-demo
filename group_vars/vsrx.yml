@@ -1,0 +1,4 @@
+---
+
+ssh_connection_limit: 5
+ssh_rate_limit: 5

@@ -1,0 +1,59 @@
+# =========================================================
+# Authorization classes
+# =========================================================
+
+classes:
+  # Level 1 (Read Only)
+  - name: L1
+    idle_timeout: 30
+    permissions: 
+      - view
+
+  # Level 2 (Operator)
+  - name: L2
+    idle_timeout: 30
+    permissions:
+      - configure
+      - firewall-control
+      - network
+      - routing
+      - routing-control
+      - snmp
+      - system
+      - trace
+      - view
+      - view-configuration
+
+  # Level 3 (Network Admin)
+  - name: L3
+    idle_timeout: 60
+    permissions: 
+      - all
+
+# =========================================================
+# User authentication
+# =========================================================
+
+users:
+
+  - login: admin
+    name: Network Admin
+    uid: 5678
+    class: L3
+    password: "$1$f9GW6OxO$LDeSSvLf2adXjGyVX0SiL/"
+    rsa_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDgkVjgfvooKnf3rvzM7+53CrWVUnM0MH8LZmDpvULMuEmkBeax8wf37FTKbDf/farzZqt5+bMI2Wb647nRsFJvNfpVA0z0PuOl+IJDOn57ggGmVfQ0te4XKSZA7ZqTuUy4KXKfEMwG+Wbh8N+eorcfcGuGOiFuj7PUq/7tXquiFn5JWM8pabB4PjEY3QOEmQJsdi9TjNjR86MT5gx3HxIkM2OeccGbEg8itv9Ag3Rtyz55WCDRrcIpJ0okAMoeK9SLgOKDMcXNvUXZET7+g9gw7f4cY0DgnNA5IAhS/A8OO9I+cYTX3cr1b+78WMf5B1cK7iSm96pes5s+zyyphgzR admin@localhost"
+
+  - login: btables
+    name: Bobby Tables
+    uid: 9876
+    class: L1
+    password: "$1$99690840b73c55ea09398bea95ab079e85f1a350"
+
+  - login: oper
+    name: Network Operator
+    uid: 1234
+    class: L2
+    password: "$1$JOeZQorD$Rs1wMNhjty5TOV260bfID."
+    rsa_keys:
+      - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCd+pIH497e/YUIXWt/fBF1DHwd5wlRxJdt22+ibWZQjXSs7F8sQBuIFhhv3rPOkBMKyBLgIeg+bc+KZu6NOfT38xTdRyTzZatojaZfuUcKWjK/It8L29wP2uc1woInYsNsrrMv8ML0s49pYS6BNMqwhFomcqLhw2OSu1RqQRlK69zNymgp9SHPTT0DXhouftQTchgWOxxt58rJ+naL+zIBGGBx2kTSEf3xfi4BpR41pcRhOuRxMiZl72+aYx09UkSMPWQT2aoZY3XAPylxxAD/7P5VJESrn2qn0GZv4D5F0DwZc1mM5xWMSgECvBFv8TQMVVYDU2+LU9rOclWaGS/ oper@localhost"

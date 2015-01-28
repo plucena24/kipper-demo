@@ -1,0 +1,246 @@
+<system operation="replace">
+  <time-zone>UTC</time-zone>
+  <undocumented>
+    <dump-on-panic>
+    </dump-on-panic>
+  </undocumented>
+  <default-address-selection/>
+  <saved-core-context/>
+  <location>
+    <country-code>{{ country_code }}</country-code>
+    <postal-code>{{ postal_code }}</postal-code>
+    <latitude>{{ latitude }}</latitude>
+    <longitude>{{ longitude }}</longitude>
+    <building>{{ building }}</building>
+  </location>
+  <ports>
+    <console>
+      <log-out-on-disconnect/>
+    </console>
+    <auxiliary>
+      <disable/>
+    </auxiliary>
+  </ports>
+  <host-name>{{ host_basename }}</host-name>
+  <domain-name>{{ domain_name }}</domain-name>
+{% for domain in domain_search %}
+  <domain-search>{{ domain }}</domain-search>
+{% endfor %}
+{% if backup_router is defined %}
+  <backup-router>
+      <address>{{ backup_router }}</address>
+      <destination>0.0.0.0/0</destination>
+  </backup-router>
+{% endif %}
+  <root-authentication>
+    <encrypted-password>{{ root_password_hash }}</encrypted-password>
+  </root-authentication>
+{% for name_server in name_servers %}
+  <name-server>
+    <name>{{ name_server }}</name>
+  </name-server>
+{% endfor %}
+{% if op_scripts is defined %}
+  <scripts>
+{% for script in op_scripts %}
+    <op>
+      <file>
+	<name>{{ script }}</name>
+      </file>
+    </op>
+{% endfor %}
+  </scripts>
+{% endif %}
+  <login>
+    <message>
+          UNAUTHORIZED ACCESS TO THIS DEVICE IS PROHIBITED.
+    </message>
+{% if classes %}
+{% for class in classes %}
+    <class>
+      <name>{{ class.name }}</name>
+{% if class.idle_timeout is defined %}
+      <idle-timeout>{{ class.idle_timeout }}</idle-timeout>
+{% endif %}
+{% for perm in class.permissions %}
+      <permissions>{{ perm }}</permissions>
+{% endfor %}
+{% if class.allow_commands is defined %}
+      <allow-commands>{{ class.allow_commands }}</allow-commands>
+{% endif %}
+    </class>
+{% endfor %}
+{% endif %}
+{% if users %}
+{% for user in users %}
+    <user>
+      <name>{{ user.login }}</name>
+      <uid>{{ user.uid }}</uid>
+      <full-name>{{ user.name }}</full-name> 
+      <class>{{ user.class }}</class> 
+      <authentication>
+{% if user.password is defined %}
+	<encrypted-password>{{ user.password }}</encrypted-password>
+{% endif %}
+{% if user.rsa_keys is defined %}
+{% for key in user.rsa_keys %}
+	<ssh-rsa>
+	  <name>{{ key }}</name>
+	</ssh-rsa>
+{% endfor %}
+{% endif %}
+{% if user.dsa_keys is defined %}
+{% for key in user.dsa_keys %}
+	<ssh-dsa>
+	  <name>{{ key }}</name>
+	</ssh-dsa>
+{% endfor %}
+{% endif %}
+      </authentication>
+    </user>
+{% endfor %}
+{% endif %}
+    <password>
+      <format>sha1</format>
+    </password>
+  </login>
+  <services>
+    <ssh>
+      <root-login>deny-password</root-login>
+{% if junos.facts.version is defined and 
+   junos.facts.version | version_compare('11.4', operator='>=', strict=False)  %}
+      <tcp-forwarding/>
+{% endif %}
+      <protocol-version>v2</protocol-version>
+{% if junos.facts.version is defined and 
+   junos.facts.version | version_compare('11.4', operator='>=', strict=False)  %}
+      <ciphers>aes256-cbc</ciphers>
+      <ciphers>aes192-cbc</ciphers>
+      <ciphers>aes128-cbc</ciphers>
+      <hostkey-algorithm>
+        <ssh-dss>
+        </ssh-dss>
+        <ssh-rsa>
+        </ssh-rsa>
+        <ssh-ecdsa>
+        </ssh-ecdsa>
+      </hostkey-algorithm>
+{% endif %}
+{% if junos.facts.version is defined and 
+   junos.facts.version | version_compare('11.4R5', operator='>=', strict=False)  %}
+      <client-alive-count-max>{{ system_client_alive_count_max }}</client-alive-count-max>
+      <client-alive-interval>{{ system_client_alive_interval }}</client-alive-interval>
+{% endif %}
+      <connection-limit>{{ ssh_connection_limit }}</connection-limit>
+      <rate-limit>{{ ssh_rate_limit }}</rate-limit>
+    </ssh>
+    <netconf>
+      <ssh>
+	<connection-limit>{{ ssh_connection_limit }}</connection-limit>
+	<rate-limit>{{ ssh_rate_limit }}</rate-limit>
+      </ssh>
+{% if junos.facts.version is defined and 
+   junos.facts.version | version_compare('12.2', operator='>=', strict=False)  %}
+      <traceoptions>
+	<file>
+	  <filename>traceopts-netconf</filename>
+	  <size>512k</size>
+	  <files>10</files>
+	  <no-world-readable/>
+	</file>
+	<flag>
+	  <name>all</name>
+	</flag>
+      </traceoptions>
+{% endif %}
+    </netconf>
+  </services>
+  <syslog>
+    <archive>           
+      <size>10m</size>
+      <files>10</files>
+    </archive>
+    <user>
+      <name>*</name>
+      <contents>
+	<name>any</name>
+	<emergency/>
+      </contents>
+    </user>
+    <host>
+      <name>{{ syslog_host }}</name>
+{% if syslog_source_addr is defined %}
+      <source-address>{{ syslog_source_addr }}</source-address>
+{% endif %}
+      <contents>
+	<name>any</name>
+	<any/>
+      </contents>
+    </host>
+    <file>
+      <name>messages</name>
+      <contents>
+	<name>any</name>
+	<notice/>
+      </contents>
+    </file>
+    <file>
+      <name>events.log</name>
+      <contents>
+        <name>authorization</name>
+        <info/>
+      </contents>
+      <archive>
+        <size>{{ syslog_file_size }}</size>
+        <files>{{ syslog_file_count }}</files>
+        <no-world-readable/>
+      </archive>
+    </file>
+    <file>
+      <name>commands.log</name>
+      <contents>
+        <name>interactive-commands</name>
+        <any/>
+      </contents>
+      <archive>
+        <size>{{ syslog_file_size }}</size>
+        <files>{{ syslog_file_count }}</files>
+        <no-world-readable/>
+      </archive>
+    </file>
+    <file>
+      <name>changes.log</name>
+      <contents>
+        <name>change-log</name>
+        <info/>
+      </contents>
+      <archive>
+        <size>{{ syslog_file_size }}</size>
+        <files>{{ syslog_file_count }}</files>
+        <no-world-readable/>
+      </archive>
+    </file>
+    <time-format>
+      <year/>
+      <millisecond/>
+    </time-format>
+{% if junos.facts.version is defined and 
+   junos.facts.version | version_compare('12.3', operator='>=', strict=False)  %}
+    <log-rotate-frequency>15</log-rotate-frequency>
+{% endif %}
+  </syslog>
+  <compress-configuration-files/>
+  <ntp>
+{% if ntp_boot_server is defined %}
+    <boot-server>{{ ntp_boot_server }}</boot-server>
+{% endif %}
+{% for ntp_server in ntp_servers %}
+    <server>
+      <name>{{ ntp_server }}</name>
+    </server>
+{% endfor %}
+{% if ntp_source_addr is defined %}
+    <source-address>{{ ntp_source_addr }}</source-address>
+{% endif %}
+  </ntp>
+</system>

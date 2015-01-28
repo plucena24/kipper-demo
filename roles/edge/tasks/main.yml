@@ -1,0 +1,13 @@
+---
+
+- name: Policy-Options
+  template: src=shared_templates/policy-options.j2 dest={{ build_dir }}/policy-options.xml mode=400
+  tags:
+    - edge
+    - policy-options
+
+- name: Firewall Rules
+  template: src=firewall.j2 dest={{ build_dir }}/firewall.xml mode=400
+  tags:
+    - edge
+    - firewall

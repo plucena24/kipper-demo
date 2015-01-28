@@ -1,0 +1,21 @@
+<policy-options>
+{# 
+We have prefix lists defined at different levels, so we combine them.
+Note: Make sure that the lists do not overlap
+#}
+{% for plist in global_prefix_lists | union(role_prefix_lists) | union(local_prefix_lists) %}
+  <prefix-list operation="replace">
+    <name>{{ plist.name }}</name>
+{% if plist.blocks is defined %}
+{% for block in plist.blocks %}
+    <prefix-list-item>
+      <name>{{ block }}</name>
+    </prefix-list-item>
+{% endfor %}
+{% endif %}
+{% if plist.apply_path is defined %}
+      <apply-path>{{ plist.apply_path }}</apply-path>
+{% endif %}
+  </prefix-list>
+{% endfor %}
+</policy-options>

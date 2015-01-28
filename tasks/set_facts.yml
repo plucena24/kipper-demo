@@ -1,0 +1,20 @@
+---
+
+  - name: Get current working dir
+    command: /bin/pwd
+    register: cwd
+    always_run: yes
+    changed_when: False
+   
+  - name: Shortening name
+    set_fact:
+        host_basename: "{{ inventory_hostname | regex_replace('\\.(example.com|example.net)$', '') }}"
+
+  - name: Setting config build path
+    set_fact:
+        build_dir: "{{ tmp_path }}/build/{{ host_basename }}.d"
+        config_dir: "{{ cwd.stdout }}/configs/{{ host_basename }}.d/"
+
+  - name: Defining config file
+    set_fact:
+        config_file: "{{ config_dir }}/config.xml"

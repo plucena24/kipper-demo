@@ -1,0 +1,29 @@
+---
+
+location: "Site A"
+country_code: US
+postal_code: 1234
+latitude: 1.1111
+longitude: 2.2222
+building: "Acme Colocation 1"
+
+snmp_trap_targets:
+  - 192.0.2.5
+
+name_servers:
+  - 192.0.2.5
+
+ntp_boot_server: 192.0.2.5
+
+syslog_host: 192.0.2.5
+
+ntp_servers:
+  - 192.0.2.5
+  - 192.0.2.1
+  - 198.51.100.5
+
+local_prefix_lists:
+  - name: SNMP_MGRS
+    blocks:
+      - 192.0.2.5
+      - 198.51.100.5

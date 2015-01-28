@@ -1,0 +1,17 @@
+---
+
+role_prefix_lists:
+
+  - name: GRE_PEERS
+    apply_path: "interfaces &lt;*&gt; unit &lt;*&gt; tunnel destination &lt;*&gt;"
+
+# Notice that the apply-paths reflect the fact that these routers use
+# multiple routing instances
+  - name: BGP_PEERS
+    apply_path: "routing-instances &lt;*&gt; protocols bgp group &lt;*&gt; neighbor &lt;*.*.*.*&gt;"
+
+  - name: V6_BGP_PEERS
+    apply_path: "routing-instances &lt;*&gt; protocols bgp group &lt;*&gt; neighbor &lt;*:*&gt;"
+
+local_prefix_lists: []
+

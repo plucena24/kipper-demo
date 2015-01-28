@@ -1,0 +1,13 @@
+---
+
+- name: System Configuration
+  template: src=system.j2 dest={{ build_dir }}/system.xml mode=400
+  tags:
+    - common
+    - authentication
+
+- name: SNMP Configuration
+  template: src=snmp.j2 dest={{ build_dir }}/snmp.xml mode=400
+  tags:
+    - common
+    - snmp
